@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="task-container">
+            <h1>Mi Lista de Tareas</h1><!--nlaza el campo de texto input con la variable newTask, 
+            permitiendo que se actualice automáticamente cuando el usuario escribe.-->
+            <div class="input-container" v-if="!showFarewellMessage">
+                <input type="text" v-model="newTask" placeholder="Añadir una nueva tarea" @keyup.enter="addTask">
+                <button @click="addTask">Agregar</button>
+                <button @click="deleteLastTask" :disabled="tasks.length === 0">Eliminar Última</button>
+            </div>
+            <!-- Itera sobre la lista de tareas (tasks),
+             mostrando cada tarea y sus botones correspondientes.-->
+            <div class="task-list" v-if="!showFarewellMessage">
+                <div v-for="(task, index) in tasks" :key="index" class="task-item" :class="{ completed: task.completed }">
+                    <span>{{ task.text }}</span>
+                    <button @click="toggleTask(index)">Completado</button>
+                    <button @click="deleteTask(index)" class="delete-button">Eliminar</button>
+                </div>
+            </div>
+
+            <div class="progress-container" v-if="!showFarewellMessage">
+                <div :class="progressClass" class="progress-bar" :style="{ width: progressPercentage + '%' }"></div>
+            </div>
+
+            <p v-if="allTasksCompleted && !showFarewellMessage" class="completion-message">¡En hora buena! Haz completado tus tareas.</p>
+            <!-- Usa una condición en Vue para mostrar u ocultar secciones basadas en el valor de showFarewellMessage. 
+            Si este valor es true, ciertas secciones (como
+            el input de tareas y la lista) se ocultan, y solo se muestra el mensaje de despedida.-->
+            <div v-if="allTasksCompleted && !showFarewellMessage" class="restart-dialog">
+                <p>¿Quieres empezar de nuevo?</p>
+                <button @click="restartTasks(true)">Sí</button><!--Los botones usan @click para llamar a métodos de Vue,
+                 como addTask, deleteLastTask, toggleTask, deleteTask y restartTasks.-->
+                <button @click="restartTasks(false)">No</button>
+            </div>
+
+            <p v-if="showFarewellMessage" class="farewell-message">Hasta pronto, gracias por usar mi programa.</p>
+            <!--v-if y v-show se utilizan para mostrar o esconder 
+            secciones de la aplicación según el estado de las variables.-->
+            <button v-if="showFarewellMessage" @click="restartTasks(true)" class="restart-button">Empezar de nuevo</button>
+        </div>
+    </div>
+    <script src="./javascript/script.js"></script>
+</body>
+</html>
